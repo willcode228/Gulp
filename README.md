@@ -1,2 +1,2 @@
 # Gulp
-galp package
+gulp package

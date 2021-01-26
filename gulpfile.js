@@ -33,7 +33,7 @@ function browsersync() {
 //format scripts
 function scripts() {
     return src([
-        'app/js/*.js'
+        'app/js/main.js'
     ])
     .pipe(concat('app.min.js'))
     .pipe(uglify())

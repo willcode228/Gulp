@@ -52,6 +52,17 @@ function style() {
     .pipe(browserSync.stream())
 }
 
+function normalize(){
+    return src([
+        'node_modules/normalize.css/normalize.css',
+    ])
+    .pipe(concat('libs.min.css'))
+    .pipe(autoprefixer({ overrideBrowserslist: ['last 10 versions'], grid: true }))
+    .pipe(cleancss({level: {1: {specialComments: 0}}}))
+    .pipe(dest('app/css/'))
+    .pipe(browserSync.reload({stream: true}))
+}
+
 //format img
 function images(){
     return src('app/img/src/**/*')
@@ -96,7 +107,8 @@ exports.images = images;
 
 exports.cleanimg = cleanimg;
 
+//****************default task*****************
+exports.default = parallel(style, normalize, scripts, images,  browsersync, startWatch);
+
 //****************build task*****************
 exports.build = series(style, scripts, images, buildcopy);
-
-exports.default = parallel(style, scripts, images,  browsersync, startWatch);

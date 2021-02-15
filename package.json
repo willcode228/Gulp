@@ -27,5 +27,8 @@
     "gulp-newer": "^1.4.0",
     "gulp-sass": "^4.1.0",
     "gulp-uglify-es": "^2.0.0"
+  },
+  "dependencies": {
+    "normalize.css": "^8.0.1"
   }
 }

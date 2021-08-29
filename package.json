@@ -27,6 +27,7 @@
     "gulp-newer": "^1.4.0",
     "gulp-sass": "^5.0.0",
     "gulp-uglify-es": "^2.0.0",
+    "gulp-webp": "^4.0.1",
     "sass": "^1.38.1"
   },
   "dependencies": {

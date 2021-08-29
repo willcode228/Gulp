@@ -14,21 +14,34 @@ const autoprefixer = require('gulp-autoprefixer');
 const cleancss = require('gulp-clean-css');
 //require image-min
 const imagemin = require('gulp-imagemin');
+//require webp
+const webp = require('gulp-webp');
 //require newer
 const newer = require('gulp-newer');
 //require del
 const del = require('del');
-//require pug
-const pug = require('gulp-pug');
+//require htmlmin
+const htmlmin = require('gulp-htmlmin');
+// //require pug
+// const pug = require('gulp-pug');
 
-function pugCompiler(){
+// function pugCompiler(){
+//     return src([
+//         'app/pug/index.pug'
+//     ])
+//     .pipe(pug())
+//     .pipe(concat('index.html'))
+//     .pipe(dest('app/'))
+//     .pipe(browserSync.stream())
+// }
+
+//format html
+function htmlMin() {
     return src([
-        'app/pug/index.pug'
+        'app/*.html'
     ])
-    .pipe(pug())
-    .pipe(concat('index.html'))
-    .pipe(dest('app/'))
-    .pipe(browserSync.stream())
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(dest('dist'));
 }
 
 //general browserSync logic
@@ -77,10 +90,17 @@ function normalize(){
 //format img
 function images(){
     return src('app/img/src/**/*')
-    // .pipe(newer())
     .pipe(imagemin())
     .pipe(dest('app/img/dest'))
 }
+
+function toWebp(){
+    return src('app/img/src/**/*')
+    .pipe(webp())
+    .pipe(dest('app/img/dest'))
+}
+
+
 
 function cleanimg() {
 	return del('app/img/dest/**/*', { force: true });
@@ -92,16 +112,16 @@ function startWatch() {
     watch('app/scss/**/*.scss', style);
     watch('app/*.html').on('change', browserSync.reload);
     watch('app/img/src/**/*', images);
-    watch('app/pug/**/*.pug', pugCompiler);
+    // watch('app/pug/**/*.pug', pugCompiler);
 }
 
 //build function
 function buildcopy() {
-	return src([ 
+	return src([
 		'app/css/**/*.min.css',
 		'app/js/**/*.min.js',
 		'app/img/dest/**/*',
-		], { base: 'app' }) 
+		], { base: 'app' })
 	.pipe(dest('dist'))
 }
 
@@ -119,7 +139,9 @@ exports.images = images;
 exports.cleanimg = cleanimg;
 
 //****************default task*****************
-exports.default = parallel(pugCompiler, style, normalize, scripts, images,  browsersync, startWatch);
+// exports.default = parallel(pugCompiler, style, normalize, scripts, toWebp, images,  browsersync, startWatch);
+exports.default = parallel(style, normalize, scripts, toWebp, images,  browsersync, startWatch);
 
 //****************build task*****************
-exports.build = series(style, scripts, images, buildcopy);
+// exports.build = series(style, scripts, toWebp, images, buildcopy);
+exports.build = series(htmlMin, style, scripts, toWebp, images, buildcopy);
